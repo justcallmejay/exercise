@@ -1,0 +1,48 @@
+.home {
+    height: 100%;
+    width: 100%;
+    border: inset rgb(0, 0, 0) 1px
+}
+
+.home-enter-page-container {
+    height: 100%;
+    width: 40%;
+    border: inset rgb(255, 0, 0) 1px
+}
+
+.home-enter-page-oversize {
+    height: 100%;
+    width: 80%;
+    border: inset rgb(0, 0, 0) 1px;
+}
+
+.home-enter {
+    height: 600px;
+    width: 576px;
+    overflow: hidden;
+}
+
+.home-enter-page-box, .home-enter-signup-box {
+    height: 600px;
+    width: 100%;
+    border: inset rgb(0, 0, 0) 1px
+}
+
+.home-welcome-label {
+    height: 60%;
+    width: 100%;
+    border: inset rgb(255, 0, 0) 1px
+}
+
+.btn {
+    height: 40px;
+    width: 100px;
+    margin: 10px;
+    background-color: #fff;
+}
+
+.home-welcome-container {
+    height: 100%;
+    width: 60%;
+    border: inset rgb(255, 0, 0) 1px
+}
