@@ -1,0 +1,41 @@
+.exercise-set {
+    height: 50px;
+    width: 100%;
+    border: inset rgba(0, 0, 0, 0.3) 2px;
+}
+
+.exercise-set-label {
+    align-items: center;
+    justify-content: start;
+    /* height: 100%; */
+    width: 30%;
+    border: inset rgba(0, 0, 0, 0.3) 2px;
+    padding: 0 0 0 10px;
+}
+
+.exercise-set-rep-counter {
+    justify-content: space-evenly;
+    align-items: center;
+    /* height: 100%; */
+    width: 20%;
+    border: inset rgba(0, 0, 0, 0.3) 2px;
+}
+
+.ex-set-counter {
+    width: 40%;
+    height: 60%;
+}
+
+.exercise-rest-counter {
+    justify-content: space-evenly;
+    align-items: center;    
+}
+
+.exercise-rest-counter {
+    border: inset rgba(0, 0, 0, 0.3) 2px;
+}
+
+.delete-btn-container {
+    width: 7%;
+    border: inset rgba(0, 0, 0, 0.3) 2px;
+}
