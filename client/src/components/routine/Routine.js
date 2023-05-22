@@ -26,8 +26,8 @@ function Routine( { currentUser } ) {
             ...exercise,
             sets: "",
             reps: "",
-            rest_intervals: "",
-        intensity: ""}])
+            rest_intervals: ""
+        }])
     }
 
     function handleUpdateExercise(exerc) {
@@ -74,8 +74,6 @@ function Routine( { currentUser } ) {
                             sets: exercise.sets,
                             reps: exercise.reps,
                             rest: exercise.rest_intervals,
-                            intensity: "",
-                            weight: "",
                         })
                     })
                     .then(res => res.json())
