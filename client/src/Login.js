@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom'
 import './Login.css'
 import { Link } from 'react-router-dom'
 
-function Login( { updateUser, currentUser } ) {
+function Login( { updateUser, currentUser, setLoading } ) {
 
     console.log(currentUser)
 
@@ -27,6 +27,7 @@ function Login( { updateUser, currentUser } ) {
 
     function handleSubmit(e) {
         e.preventDefault();
+        setLoading(loading => !loading);
         if (formData.username === "" || formData.password === "") {
             console.log('Enter text field')
         } else {
@@ -40,6 +41,7 @@ function Login( { updateUser, currentUser } ) {
             })
             .then(res => {
                 if (res.ok) {
+                    setLoading(loading => !loading);
                     res.json().then(user => {
                     updateUser(user)
                     history.push(`/users/${user.username}`)
