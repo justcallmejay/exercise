@@ -1,0 +1,60 @@
+.manage-routine {
+    height: 100%;
+    width: 100%;
+}
+
+.select-created-routine-container {
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 7%;
+    border: inset rgb(0, 0, 0) 1px;
+}
+
+.routine-select-btn {
+    justify-content: flex-start;
+    overflow-y: auto;
+    width: 100%;
+    height: 120px;
+    border: inset rgb(0, 0, 0) 1px;
+    flex-wrap: wrap;
+}
+
+.edit-delete-btn-container, .select-routine-container {
+    height: 100%;
+    width: 20%;
+    border: inset rgb(0, 0, 0) 1px;
+    align-items: center;
+}
+
+.routine-btn {
+    margin: 10px;
+    height: 40px;
+    width: 150px;
+    border: inset rgb(0, 0, 0) 1px;
+    border-radius: 10px;
+}
+
+.hov:hover {
+    cursor: pointer;
+}
+
+.delete-display-container {
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.71);
+    position: absolute;
+}
+
+.delete-container {
+    height: 250px;
+    width: 500px;
+    border: inset rgb(0, 0, 0) 1px;
+    background-color: #fff;
+    border-radius: 20px;
+}
+
+.delete-msg, .delete-decision-btns {
+    width: 100%;
+    height: 50%;
+}
