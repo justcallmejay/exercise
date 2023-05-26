@@ -11,19 +11,43 @@
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
 }
 
-.signup-container {
-    width: 100%;
-    height: 20%;
-    /* border: inset rgb(0, 0, 0) 1px; */
+.signup-field-container, .signup-btn-container {
+    width: 90%;
+    height: 15%;
+}
+
+.signup-field-container {
+    border-bottom: inset rgba(0, 0, 0, 0.3) 1px;
+}
+
+.signup-field {
+    height: 65%;
+    /* border: inset rgba(0, 0, 0, 0.1) 3px; */
+}
+
+.error-container {
+    height: 35%;
+    /* border: inset rgba(0, 0, 0, 0.1) 3px; */
 }
 
 .label {
+    justify-content: center;
+    align-items: end;
     height: 100%;
     width: 30%;
     /* border: inset rgb(0, 0, 0) 1px; */
 }
 
+.label-a {
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+    height: 100%;
+    width: 30%;
+}
+
 .field {
+    align-items: end;
     height: 100%;
     width: 70%;
     /* border: inset rgb(0, 0, 0) 1px; */
@@ -32,5 +56,31 @@
 input[placeholder] {
     width: 300px;
     height: 30px;
-    border: inset rgba(0, 0, 0, 0.3) 2px;
+    /* border: inset rgba(0, 0, 0, 0.3) 2px; */
+}
+
+.label-number {
+    height: 100%;
+    width: 25%;
+    /* border: inset rgb(0, 0, 0) 1px; */
+}
+
+input[name='weight'] {
+    width: 50%;
+}
+
+.field-number {
+    height: 100%;
+    width: 25%;
+    /* border: inset rgb(0, 0, 0) 1px; */
+}
+
+input[name='feet'], input[name='inches'] {
+    width: 40%;
+    /* border: inset rgb(0, 0, 0) 1px; */
+}
+
+input[name='weight'], input[name='feet'], input[name='inches'] {
+    height: 30px;
+    margin: 0 10px 0 0;
 }
