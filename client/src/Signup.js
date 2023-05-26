@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom'
 import './Signup.css'
 
-function Signup() {
+function Signup( { handleNewAccount } ) {
 
     const history = useHistory()
 
@@ -12,7 +12,10 @@ function Signup() {
         username: "",
         password: "",
         reenterpassword: "",
-        email: ""
+        email: "",
+        weight: "",
+        feet: "",
+        inches: ""
     })
 
     function handleToggleError() {
@@ -45,21 +48,23 @@ function Signup() {
             body: JSON.stringify({
                 username: formData.username,
                 password: formData.password,
-                email: formData.email 
+                email: formData.email,
+                weight: formData.weight,
+                feet: formData.feet,
+                inches: formData.inches
             })
         })
         .then(res => {
             if (res.ok) {
               history.push('/');
-              // Continue with your success logic here
+              handleNewAccount(res);
             } else {
-              return res.json(); // Parse the response body as JSON
+              return res.json();
             }
           })
           .then(data => {
             if (data) {
-              // Handle the errors received from the backend
-              console.log(data.errors);
+              setError(data.errors);
             }
           })
           .catch(error => {
@@ -70,42 +75,86 @@ function Signup() {
 
     return(
         <div className="signup r-c">
-            <form className='signup-box' onSubmit={handleSubmit}>
-                <div className="signup-container r-c">
-                    <div className='label r-c'>
-                        <h3>Username:</h3>
+            <form className='signup-box c-c' onSubmit={handleSubmit}>
+                <div className="signup-field-container c-c">
+                    <div className='signup-field flex'>
+                        <div className='label flex'>
+                            <h3>Username:</h3>
+                        </div>
+                        <div className='field flex'>
+                            <input type='text' name='username' value={formData.username} onChange={handleChange} placeholder=''/>
+                        </div>
                     </div>
-                    <div className='field r-c'>
-                        <input type='text' name='username' value={formData.username} onChange={handleChange} placeholder=''/>
+                    <div className='error-container'>
+                    <h6>{error.username}</h6>
+
+                        </div>
+                </div>
+                <div className="signup-field-container c-c">
+                    <div className='signup-field flex'>
+                        <div className='label flex'>
+                            <h3>Password:</h3>
+                        </div>
+                        <div className='field flex'>
+                            <input type='password' name='password' value={formData.password} onChange={handleChange} placeholder=''/>
+                        </div>
+                    </div>
+                    <div className='error-container'>
+                        <h6>{error.password}</h6>
                     </div>
                 </div>
-                <div className="signup-container r-c">
-                    <div className='label r-c'>
-                        <h3>Password:</h3>
+                <div className="signup-field-container c-c">
+                    <div className='signup-field flex'>
+                        <div className='label-a flex'>
+                            <h3>Re-enter</h3>
+                            <h3>Password:</h3>
+                        </div>
+                        <div className='field flex'>
+                            <input type='password' name='reenterpassword' value={formData.reenterpassword} onChange={handleChange} placeholder=''/>
+                        </div>
                     </div>
-                    <div className='field r-c'>
-                        <input type='password' name='password' value={formData.password} onChange={handleChange} placeholder=''/>
+                    <div className='error-container'>
+                        <h6>{error}</h6>
                     </div>
                 </div>
-                <div className="signup-container r-c">
-                    <div className='label c-c'>
-                        <h3>Re-enter</h3>
-                        <h3>Password:</h3>
+                <div className="signup-field-container c-c">
+                    <div className='signup-field flex'>
+                        <div className='label flex'>
+                            <h3>E-mail:</h3>
+                        </div>
+                        <div className='field flex'>
+                            <input type='text' name='email' value={formData.email} onChange={handleChange} placeholder=''/>
+                        </div>
                     </div>
-                    <div className='field r-c'>
-                        <input type='password' name='reenterpassword' value={formData.reenterpassword} onChange={handleChange} placeholder=''/>
+                    <div className='error-container'>
+                        <h6>{error.email}</h6>
                     </div>
-                {error ? 
-                <div className='error-field'>
-                    <h6>{error}</h6>
-                </div> : ""}
                 </div>
-                <div className="signup-container r-c">
-                    <div className='label r-c'>
-                        <h3>E-mail:</h3>
+                <div className="signup-field-container c-c">
+                    <div className='signup-field flex'>
+                        <div className='label-number r-c'>
+                            <h3>Weight:</h3>
+                        </div>
+                        <div className='field-number r-c'>
+                            <input type='number' name='weight' min='3' max='700' value={formData.weight} onChange={handleChange} />
+                            <h3>lbs:</h3>
+                        </div>
+                        <div className='label-number r-c'>
+                            <h3>Height:</h3>
+                        </div>
+                        <div className='field-number r-c'>
+                            <input type='number' name='feet' min='1' max='8' value={formData.feet} onChange={handleChange} />
+                            <h3>Ft:</h3>
+                        </div>
+                        <div className='field-number r-c'>
+                            <input type='number' name='inches' min='0' max='11' value={formData.inches} onChange={handleChange} />
+                            <h3>In:</h3>
+                        </div>
                     </div>
-                    <div className='field r-c'>
-                        <input type='text' name='email' value={formData.email} onChange={handleChange} placeholder=''/>
+                    <div className='error-container r-c'>
+                        <h6>{error.height}</h6>
+                        <h6>{error.feet}</h6>
+                        <h6>{error.inches}</h6>
                     </div>
                 </div>
                 <div className='signup-btn-container r-c'>
