@@ -1,21 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import ExerciseCard from './ExerciseCard';
+import FilterExercise from './FilterExercise';
+import { v4 as uuidv4 } from 'uuid';
 import Set from './Set';
 import './Routine.css';
 
-function Routine( { currentUser } ) {
+//If request fails to pass, open another terminal, go to rails c and put line of code below VVVV
+//ActiveRecord::Base.connection.execute("BEGIN TRANSACTION; END;")
+
+function Routine( { currentUser, setLoading } ) {
 
     const history = useHistory()
+    const generatedUuid = uuidv4();
 
+    const [ filterDifficulty, setFilterDifficulty ] = useState('All')
+    const [ searchInput, setSearchInput ] = useState('')
     const [ routineNm, setRoutineNm ] = useState('')
     const [ exercises, setExercises ] = useState([])
     const [ selectBp, setSelectBp ] = useState('')
     const [ selectExercise, setSelectExercise ] = useState([])
     const parts = ['Glutes', 'Shoulders', 'Quads', 'Hamstrings', 'Abs', 'Back', 'Chest', 'Biceps', 'Triceps', 'Calves', 'Forearm']
 
-
     console.log(routineNm)
+
+    //filter ExerciseCards here
+
+    const filterByDifficulty = exercises.filter(exer => {
+      if (filterDifficulty === 'All') return true;
+
+      return exer.difficulty === filterDifficulty
+    })
+
+    const searchInputResult = filterByDifficulty.filter(exer => {
+      return exer.name.toUpperCase().includes(searchInput.toUpperCase())
+    })
+
+    //
 
     function handleBpSelect(part) {
         setSelectBp(part)
@@ -30,6 +51,7 @@ function Routine( { currentUser } ) {
         }])
     }
 
+
     function handleUpdateExercise(exerc) {
         setSelectExercise(exer => {
             return exer.map(ex => {
@@ -43,51 +65,70 @@ function Routine( { currentUser } ) {
     }
 
     function handleDelete(card) {
-        const deleteExercise = selectExercise.filter(ex => ex.id !== card.id)
-        setSelectExercise(deleteExercise)
+      const index = selectExercise.findIndex(exercise => exercise.id === card);
+      if (index !== -1) {
+        const deleteExercise = [...selectExercise];
+        deleteExercise.splice(index, 1);
+        setSelectExercise(deleteExercise);
+      }
     }
 
     console.log(selectExercise)
 
     function handleSubmit(e) {
         e.preventDefault();
+        setLoading(true);
+      
         fetch('/routines', {
-            method: "POST",
-            headers: {"Content-Type" : "application/json"},
-            body: JSON.stringify({
-                name: routineNm,
-                user_id: currentUser.id,
-            })
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: routineNm,
+            user_id: currentUser.id,
+          })
         })
-        .then(res => {
+          .then(res => {
             if (res.ok) {
-                res.json()
+              res.json()
                 .then((res) => {
-                    {
-                        Promise.all(selectExercise.map(exercise => 
-                        fetch('/exercise_routines', {
-                            method: "POST",
-                            headers: {"Content-Type" : "application/json"},
-                            body: JSON.stringify({
-                            routine_id: res.id,
-                            workout_id: exercise.id,
-                            sets: exercise.sets,
-                            reps: exercise.reps,
-                            rest: exercise.rest_intervals,
-                        })
+                  const promises = selectExercise.map(exercise =>
+                    fetch('/exercise_routines', {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        routine_id: res.id,
+                        workout_id: exercise.id,
+                        sets: exercise.sets,
+                        reps: exercise.reps,
+                        rest: exercise.rest_intervals,
+                      })
+                    }).then(res => {
+                      if (res.ok) {
+                        return res.json();
+                      } else {
+                        throw new Error("Failed to create exercise routine.");
+                      }
                     })
-                    .then(res => res.json())
-                    .then(res => console.log(res))
+                  );
+      
+                  Promise.all(promises)
+                    .then(results => {
+                      console.log(results);
+                      setLoading(false);
+                      history.push(`/users/${currentUser.username}`);
+                    })
                     .catch(error => {
-                        console.error(error);
-                    })
-                    ))}
-                    history.push(`/users/${currentUser.username}`)
-                })
-                //braces below for if statement  
+                      console.error(error);
+                      setLoading(false);
+                    });
+                });
             }
-        })
-    }
+          })
+          .catch(error => {
+            console.error(error);
+            setLoading(false);
+          });
+      }
 
     useEffect(() => {
             fetch(`/workouts/?muscles=${selectBp}`)
@@ -112,14 +153,14 @@ function Routine( { currentUser } ) {
                         )}
                 </div>
                 <div className='exercise-selection-container'>
-                    <div className='exercise-filter'>
-
+                    <div className='exercise-filter r-c'>
+                      <FilterExercise setFilterDifficulty={setFilterDifficulty} searchInput={searchInput} setSearchInput={setSearchInput}/>
                     </div>
                     <div className='exercise-label flex'>
                         <h4>Pick exercise(s):</h4>
                     </div>
-                    <div className='exercise-card-container r-c'>
-                    {exercises.map(workout =>
+                    <div className='exercise-card-container flex'>
+                    {searchInputResult.map(workout =>
                         <ExerciseCard workout={workout} key={workout.id} handleSelectWorkout={handleSelectWorkout}/>)}
                     </div>
                     <div className='exercise-selected-container flex'>
@@ -127,7 +168,7 @@ function Routine( { currentUser } ) {
                         <h4>Exercises: ({selectExercise.length})</h4>
                     </div>
                     {selectExercise.map((exercise, i) => 
-                        <Set exercise={exercise} key={exercise.id} index={i} setSelectExercise={setSelectExercise} handleUpdateExercise={handleUpdateExercise} handleDelete={handleDelete}/>)}
+                        <Set exercise={exercise} key={uuidv4()} index={i} setSelectExercise={setSelectExercise} handleUpdateExercise={handleUpdateExercise} handleDelete={handleDelete}/>)}
                     </div>
                     <div className='routine-submit-btn-container r-c'>
                         <button className='btn'>Submit</button>
