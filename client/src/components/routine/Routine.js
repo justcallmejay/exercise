@@ -12,8 +12,8 @@ import './Routine.css';
 function Routine( { currentUser, setLoading } ) {
 
     const history = useHistory()
-    const generatedUuid = uuidv4();
-
+    
+    const [ error, setError ] = useState([])
     const [ filterDifficulty, setFilterDifficulty ] = useState('All')
     const [ searchInput, setSearchInput ] = useState('')
     const [ routineNm, setRoutineNm ] = useState('')
@@ -23,6 +23,8 @@ function Routine( { currentUser, setLoading } ) {
     const parts = ['Glutes', 'Shoulders', 'Quads', 'Hamstrings', 'Abs', 'Back', 'Chest', 'Biceps', 'Triceps', 'Calves', 'Forearm']
 
     console.log(routineNm)
+    console.log(error)
+    console.log(selectExercise.length)
 
     //filter ExerciseCards here
 
@@ -51,7 +53,6 @@ function Routine( { currentUser, setLoading } ) {
         }])
     }
 
-
     function handleUpdateExercise(exerc) {
         setSelectExercise(exer => {
             return exer.map(ex => {
@@ -78,7 +79,8 @@ function Routine( { currentUser, setLoading } ) {
     function handleSubmit(e) {
         e.preventDefault();
         setLoading(true);
-      
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
         fetch('/routines', {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -91,7 +93,8 @@ function Routine( { currentUser, setLoading } ) {
             if (res.ok) {
               res.json()
                 .then((res) => {
-                  const promises = selectExercise.map(exercise =>
+                  const promises = selectExercise.map((exercise, i) =>
+                    delay(1000 * i).then(() => {
                     fetch('/exercise_routines', {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
@@ -101,27 +104,53 @@ function Routine( { currentUser, setLoading } ) {
                         sets: exercise.sets,
                         reps: exercise.reps,
                         rest: exercise.rest_intervals,
+                            })
+                        })
+                        .then(res => {
+                              if (res.ok) {
+                              history.push(`/users/${currentUser.username}`);
+                              // return res.json();
+                              } else {
+                                  setLoading(false);
+                                  return res.json()
+                              }
+                        })
+                        .then(data => {
+                          if (data) {
+                            setLoading(false);
+                            setError(data.errors)
+                          }
+                        })
                       })
-                    }).then(res => {
-                      if (res.ok) {
-                        return res.json();
-                      } else {
-                        throw new Error("Failed to create exercise routine.");
-                      }
-                    })
-                  );
-      
-                  Promise.all(promises)
-                    .then(results => {
-                      console.log(results);
-                      setLoading(false);
-                      history.push(`/users/${currentUser.username}`);
-                    })
-                    .catch(error => {
-                      console.error(error);
-                      setLoading(false);
+                    );
+                    Promise.all(promises)
+                      .then(results => {
+                          console.log(results);
+                          setLoading(false);
+                      })
+                      .then(data => {
+                        if (data) {
+                            setLoading(false);
+                            console.log(data.errors)
+                        }
+                      })
+                      .catch(error => {
+                          console.log(error);
+                          setLoading(false);
+                      });
                     });
-                });
+                  }
+            //promise from first request
+            else {
+              setLoading(false);
+              return res.json()
+            }
+          })
+          .then(data => {
+            //returns errors for no name
+            if (data) {
+              setLoading(false);
+              setError(data.errors)
             }
           })
           .catch(error => {
@@ -129,6 +158,7 @@ function Routine( { currentUser, setLoading } ) {
             setLoading(false);
           });
       }
+
 
     useEffect(() => {
             fetch(`/workouts/?muscles=${selectBp}`)
@@ -141,10 +171,19 @@ function Routine( { currentUser, setLoading } ) {
     return(
         <div className='routine'>
             <form className='user-routine-container' onSubmit={handleSubmit}>
-                <div className='routine-label-container flex'>
-                        <h3>Routine name:</h3>                    
-                        <input type='text' value={routineNm} placeholder='Routine Name' onChange={(e) => setRoutineNm(e.target.value)}/>
+
+                <div className='routine-label-container wd c-c'>
+                  <div className='routine-label-input wd r-c'>
+                      <h3>Routine name:</h3>                    
+                      <input type='text' value={routineNm} placeholder='Routine Name' onChange={(e) => setRoutineNm(e.target.value)}/>
+                  </div>
+                    {error ? 
+                  <div className='routine-error wd r-c'>
+                    <h5>{error.name}</h5>
+                  </div>
+                  : "" }
                 </div>
+
                 <div className='bp-button-container flex'>
                     {parts.map((bp, i) => 
                         <div className='bp-container c-c' key={i} value={bp} onClick={(e) => handleBpSelect(e.target.getAttribute('value'))}>
@@ -152,27 +191,34 @@ function Routine( { currentUser, setLoading } ) {
                         </div>
                         )}
                 </div>
+
                 <div className='exercise-selection-container'>
+
+                  {selectBp !== "" ? 
                     <div className='exercise-filter r-c'>
                       <FilterExercise setFilterDifficulty={setFilterDifficulty} searchInput={searchInput} setSearchInput={setSearchInput}/>
-                    </div>
+                    </div> : "" }
+                  
                     <div className='exercise-label flex'>
-                        <h4>Pick exercise(s):</h4>
+                        <h4>Select exercise(s):</h4>
                     </div>
                     <div className='exercise-card-container flex'>
                     {searchInputResult.map(workout =>
                         <ExerciseCard workout={workout} key={workout.id} handleSelectWorkout={handleSelectWorkout}/>)}
                     </div>
+
                     <div className='exercise-selected-container flex'>
-                    <div className='set-label flex'>
-                        <h4>Exercises: ({selectExercise.length})</h4>
+                      <div className='set-label flex'>
+                          <h4>Exercises: ({selectExercise.length})</h4>
+                      </div>
+                        {selectExercise.map((exercise, i) => 
+                        <Set error={error} exercise={exercise} key={uuidv4()} index={i} setSelectExercise={setSelectExercise} handleUpdateExercise={handleUpdateExercise} handleDelete={handleDelete}/>)}
                     </div>
-                    {selectExercise.map((exercise, i) => 
-                        <Set exercise={exercise} key={uuidv4()} index={i} setSelectExercise={setSelectExercise} handleUpdateExercise={handleUpdateExercise} handleDelete={handleDelete}/>)}
-                    </div>
+                    {selectBp && selectExercise.length > 0 ?
                     <div className='routine-submit-btn-container r-c'>
                         <button className='btn'>Submit</button>
                     </div>
+                    : ""}
                 </div>
             </form>
         </div>
