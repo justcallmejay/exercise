@@ -1,0 +1,44 @@
+.filter-exercise-container {
+    height: 100%;
+    width: 40%;
+}
+
+.filter-label {
+    height: 100%;
+    width: 35%;
+}
+
+.filter-dropdown {
+    align-items: center;
+    height: 100%;
+    width: 65%;
+}
+
+.filter-dropdown > select {
+    width: 90%;
+    height: 25px;
+    border-radius: 10px;
+    border: inset rgba(0, 0, 0, 0.3) 2px;
+}
+
+.search-exercise-container {
+    height: 100%;
+    width: 60%;
+}
+
+.search-exercise-label {
+    justify-content: end;
+    align-items: center;
+    height: 100%;
+    width: 30%;
+}
+
+.search-exercise-field {
+    height: 100%;
+    width: 70%;
+}
+
+input[placeholder="Exercise"] {
+    width: 95%;
+    border-radius: 10px;
+}
