@@ -14,10 +14,13 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
     const [ prevRoutine, setPrevRoutine ] = useState([])
     const getWeight = prevRoutine.map(rout => rout.exercise_rxes.map(ex => ex.weight))
     
-    console.log(selectLast)
-    console.log(getWeight.length > 0)
-    console.log(prevRoutine)
+    // console.log(selectLast)
+    // console.log(getWeight.length > 0)
+    // console.log(prevRoutine)
     
+
+    console.log(errors)
+
     const [ selectRoutine, setSelectRoutine ] = useState('')
     const [ routineArray, setRoutineArray ] = useState([])
     const [ date, setDate ] = useState(new Date())
@@ -25,15 +28,15 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
         return routineArray.map(() => ({weight : ""})
         )
     })
-
-    console.log(todaysRoutine)
-
     
+    // console.log(errors.map(re => re.errors.weight))
+    // console.log(todaysRoutine)
+
     function selectLastBox() {
         setSelectLast(selectLast => !selectLast)
     }
 
-    console.log(selectRoutine)
+    // console.log(selectRoutine)
 
     // const findExercise = todaysRoutine.find(ex => ex.exercise_routine.routine.name)
 // 
@@ -55,7 +58,7 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
         .then(res => res.json())
         .then(res => setRoutineArray(res))
     // }
-}, [selectRoutine])
+    }, [selectRoutine])
 
     function handleSelect(e) {
         setSelectRoutine(e)
@@ -69,7 +72,7 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
     }
 
     // console.log(selectRoutine.length)
-    console.log(routineArray)
+    // console.log(routineArray)
     // console.log(weightInput)
 
     function handleSubmit(e) {
@@ -82,7 +85,9 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
       
         const promises = routineArray.map((rout, i) => {
           return delay(1000 * i).then(() => {
-            const routine = weightInput[i].weight;
+            const weightInputItem = weightInput[i];
+            const routine = weightInputItem && weightInputItem.weight;
+            console.log(routine)
       
             return fetch('/exercise_rxes', {
               method: 'POST',
@@ -91,35 +96,44 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
                 exercise_routine_id: rout.id,
                 weight: routine,
                 date: formattedDate,
-                intensity: '',
-                percent_completed: '',
-                completed: ''
-              }),
-            });
-          });
-        });
-      
-        Promise.all(promises)
-          .then((responses) => {
-            const errorResponses = responses.filter((res) => !res.ok);
-            if (errorResponses.length === 0) {
-              setLoading(false);
+                intensity: 0,
+                percent_completed: 0.0,
+                completed: null
+            })
+        })
+        .then(res => {
+              if (res.ok) {
               history.push(`/users/${currentUser.username}`);
-            } else {
-              return Promise.all(errorResponses.map((res) => res.json()));
-            }
-          })
-          .then((errors) => {
-            if (errors) {
-              setLoading(false);
-              setErrors(errors);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
+              // return res.json();
+              } else {
+                  setLoading(false);
+                  return res.json()
+              }
+        })
+        .then(data => {
+          if (data) {
             setLoading(false);
-          });
-      }
+            setErrors(data.errors)
+          }
+        })
+      })
+    });
+    Promise.all(promises)
+      .then(results => {
+          console.log(results);
+          setLoading(false);
+      })
+      .then(data => {
+        if (data) {
+            setLoading(false);
+            console.log(data.errors)
+        }
+      })
+      .catch(error => {
+          console.log(error);
+          setLoading(false);
+      });
+    };
 
     return(
         <form className='select-routine' onSubmit={handleSubmit}>
@@ -145,9 +159,14 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
                     </div>
             <div className='routine-exercises-container'>
                 {routineArray.map((rout, index) =>
-                <>
-                <div className='select-exercise-label flex' key={rout.id}>
+                <div key={rout.id}>
+                <div className='select-exercise-label flex'>
                     <h3>Exercise: {rout.workout.name} ({rout.workout.kind})</h3>
+                    {errors ? 
+                    <div className='error-weight ht'> 
+                        <h6>{errors.weight}</h6>
+                        </div> :
+                    ""}
                 </div>
                 <div className='select-exercise-scheme flex' >
 
@@ -165,7 +184,7 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
                         <h4>Rest Intervals: {rout.rest} min.</h4>
                     </div>
                 </div>
-                </>
+                </div>
                 )}
             </div>
             <div className='date-picker-container r-c'>
