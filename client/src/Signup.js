@@ -7,6 +7,7 @@ function Signup( { handleNewAccount } ) {
     const history = useHistory()
 
     const [ error, setError ] = useState([])
+    const [ pwError, setPwError ] = useState('')
     const [ toggleError, setToggleError ] = useState(false)
     const [ formData, setFormData ] = useState({
         username: "",
@@ -18,11 +19,11 @@ function Signup( { handleNewAccount } ) {
         inches: ""
     })
 
-    function handleToggleError() {
-        if (toggleError === true) {
-            setToggleError(toggleError => !toggleError)
-        }
-    }
+    // function handleToggleError() {
+    //     if (toggleError === true) {
+    //         setToggleError(toggleError => !toggleError)
+    //     }
+    // }
 
     function handleChange(e) {
         const { name, value } = e.target
@@ -34,18 +35,23 @@ function Signup( { handleNewAccount } ) {
         })
     }
 
+    console.log(typeof(formData.weight))
+    console.log(typeof(formData.feet))
+
+
     console.log(error)
 
     function handleSubmit(e) {
         e.preventDefault();
         if (formData.password !== formData.reenterpassword) {
-            setError("Passwords don't match")
-            setToggleError(toggleError => toggleError === true)
+            setPwError("Passwords don't match")
+            // setToggleError(toggleError => toggleError === true)
         } else {
         fetch('/users', {
             method: "POST",
             headers: {"Content-Type" : "application/json"},
             body: JSON.stringify({
+                name: formData.name,
                 username: formData.username,
                 password: formData.password,
                 email: formData.email,
@@ -76,6 +82,20 @@ function Signup( { handleNewAccount } ) {
     return(
         <div className="signup r-c">
             <form className='signup-box c-c' onSubmit={handleSubmit}>
+            <div className="signup-field-container c-c">
+                    <div className='signup-field flex'>
+                        <div className='label flex'>
+                            <h3>Name:</h3>
+                        </div>
+                        <div className='field flex'>
+                            <input type='text' name='name' value={formData.name} onChange={handleChange} placeholder=''/>
+                        </div>
+                    </div>
+                    {error ? 
+                    <div className='error-container'>
+                        <h6>{error.name}</h6>
+                    </div> : ""}
+                </div>
                 <div className="signup-field-container c-c">
                     <div className='signup-field flex'>
                         <div className='label flex'>
@@ -85,10 +105,10 @@ function Signup( { handleNewAccount } ) {
                             <input type='text' name='username' value={formData.username} onChange={handleChange} placeholder=''/>
                         </div>
                     </div>
+                    {error  ?
                     <div className='error-container'>
-                    <h6>{error.username}</h6>
-
-                        </div>
+                        <h6>{error.username}</h6>
+                    </div> : "" }
                 </div>
                 <div className="signup-field-container c-c">
                     <div className='signup-field flex'>
@@ -99,9 +119,10 @@ function Signup( { handleNewAccount } ) {
                             <input type='password' name='password' value={formData.password} onChange={handleChange} placeholder=''/>
                         </div>
                     </div>
+                    {error  ?
                     <div className='error-container'>
                         <h6>{error.password}</h6>
-                    </div>
+                    </div> : "" }
                 </div>
                 <div className="signup-field-container c-c">
                     <div className='signup-field flex'>
@@ -113,9 +134,11 @@ function Signup( { handleNewAccount } ) {
                             <input type='password' name='reenterpassword' value={formData.reenterpassword} onChange={handleChange} placeholder=''/>
                         </div>
                     </div>
+                    {pwError != "" ?
                     <div className='error-container'>
-                        <h6>{error}</h6>
+                        <h6>{pwError}</h6>
                     </div>
+                 : ""}
                 </div>
                 <div className="signup-field-container c-c">
                     <div className='signup-field flex'>
@@ -126,9 +149,10 @@ function Signup( { handleNewAccount } ) {
                             <input type='text' name='email' value={formData.email} onChange={handleChange} placeholder=''/>
                         </div>
                     </div>
+                    {error  ?
                     <div className='error-container'>
                         <h6>{error.email}</h6>
-                    </div>
+                    </div> : "" }
                 </div>
                 <div className="signup-field-container c-c">
                     <div className='signup-field flex'>
@@ -151,11 +175,13 @@ function Signup( { handleNewAccount } ) {
                             <h3>In:</h3>
                         </div>
                     </div>
+                    {error ? 
                     <div className='error-container r-c'>
+                        <h6>{error.weight}</h6>
                         <h6>{error.height}</h6>
                         <h6>{error.feet}</h6>
                         <h6>{error.inches}</h6>
-                    </div>
+                    </div>: ""}
                 </div>
                 <div className='signup-btn-container r-c'>
                     <button className='btn'>Sign Up</button>
