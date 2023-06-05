@@ -4,6 +4,7 @@ import ExerciseCard from './ExerciseCard';
 import FilterExercise from './FilterExercise';
 import { v4 as uuidv4 } from 'uuid';
 import Set from './Set';
+import BackBtn from '../BackBtn'
 import './Routine.css';
 
 //If request fails to pass, open another terminal, go to rails c and put line of code below VVVV
@@ -21,11 +22,17 @@ function Routine( { currentUser, setLoading } ) {
     const [ selectBp, setSelectBp ] = useState('')
     const [ selectExercise, setSelectExercise ] = useState([])
     const parts = ['Glutes', 'Shoulders', 'Quads', 'Hamstrings', 'Abs', 'Back', 'Chest', 'Biceps', 'Triceps', 'Calves', 'Forearm']
-
+    
     console.log(routineNm)
     console.log(error)
     console.log(selectExercise.length)
-
+    
+    useEffect(() => {
+            fetch(`/workouts/?muscles=${selectBp}`)
+            .then(res => res.json())
+            .then(res => setExercises(res))
+        },[selectBp])
+        
     //filter ExerciseCards here
 
     const filterByDifficulty = exercises.filter(exer => {
@@ -49,7 +56,8 @@ function Routine( { currentUser, setLoading } ) {
             ...exercise,
             sets: "",
             reps: "",
-            rest_intervals: ""
+            rest_intervals: "",
+            select_id: uuidv4()
         }])
     }
 
@@ -66,15 +74,18 @@ function Routine( { currentUser, setLoading } ) {
     }
 
     function handleDelete(card) {
-      const index = selectExercise.findIndex(exercise => exercise.id === card);
-      if (index !== -1) {
-        const deleteExercise = [...selectExercise];
-        deleteExercise.splice(index, 1);
-        setSelectExercise(deleteExercise);
-      }
+      const removeExercise = selectExercise.filter(ex => ex.select_id !== card.select_id)
+      console.log(removeExercise)
+      setSelectExercise(removeExercise)
+      // const index = selectExercise.findIndex(exercise => exercise.id === card);
+      // if (index !== -1) {
+      //   const deleteExercise = [...selectExercise];
+      //   deleteExercise.splice(index, 1);
+      //   setSelectExercise(deleteExercise);
+      // }
     }
 
-    console.log(selectExercise)
+    // console.log(selectExercise[1].select_id)
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -108,24 +119,24 @@ function Routine( { currentUser, setLoading } ) {
                         })
                         .then(res => {
                               if (res.ok) {
-                              history.push(`/users/${currentUser.username}`);
-                              // return res.json();
+                                return res.json();
                               } else {
-                                  setLoading(false);
-                                  return res.json()
+                                setLoading(false);
+                                return res.json()
                               }
-                        })
-                        .then(data => {
-                          if (data) {
-                            setLoading(false);
-                            setError(data.errors)
-                          }
-                        })
-                      })
-                    );
-                    Promise.all(promises)
-                      .then(results => {
-                          console.log(results);
+                            })
+                            .then(data => {
+                              if (data) {
+                                setLoading(false);
+                                setError(data.errors)
+                              }
+                            })
+                          })
+                          );
+                          Promise.all(promises)
+                          .then(results => {
+                            console.log(results);
+                            history.push(`/users/${currentUser.username}`);
                           setLoading(false);
                       })
                       .then(data => {
@@ -158,18 +169,9 @@ function Routine( { currentUser, setLoading } ) {
             setLoading(false);
           });
       }
-
-
-    useEffect(() => {
-            fetch(`/workouts/?muscles=${selectBp}`)
-            .then(res => res.json())
-            .then(res => setExercises(res))
-        },[selectBp])
-
         // console.log(sets)
-
     return(
-        <div className='routine'>
+        <div className='routine c-c'>
             <form className='user-routine-container' onSubmit={handleSubmit}>
 
                 <div className='routine-label-container wd c-c'>
@@ -200,7 +202,7 @@ function Routine( { currentUser, setLoading } ) {
                     </div> : "" }
                   
                     <div className='exercise-label flex'>
-                        <h4>Select exercise(s):</h4>
+                        <h4>Select exercise(s): {selectBp? (`${selectBp}`) : "" }</h4>
                     </div>
                     <div className='exercise-card-container flex'>
                     {searchInputResult.map(workout =>
@@ -221,6 +223,7 @@ function Routine( { currentUser, setLoading } ) {
                     : ""}
                 </div>
             </form>
+            <BackBtn currentUser={currentUser}/>
         </div>
     )
 }
