@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
+import { RiDeleteBin5Line } from 'react-icons/ri'; 
 import './Set.css'
 
-function Set( { exercise, handleUpdateExercise, index, handleDelete, setSelectExercise }) {
+function Set( { exercise, handleUpdateExercise, index, handleDelete, setSelectExercise, error }) {
+
+    // console.log(key)
+
+    console.log(error)
 
     const [ toggleDisplay, setToggleDisplay ] = useState(false)
 
@@ -30,6 +35,7 @@ function Set( { exercise, handleUpdateExercise, index, handleDelete, setSelectEx
     console.log(toggleDisplay)
 
     return(
+        <>
         <div className='exercise-set flex' onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
             <div className='exercise-set-label flex'>
                 <h4>{exercise.name} ({exercise.kind})</h4>
@@ -55,12 +61,22 @@ function Set( { exercise, handleUpdateExercise, index, handleDelete, setSelectEx
                 onChange={(e) => handleChange(e, index)}
                 />
             </div>
-            {toggleDisplay ? 
-            <div className='delete-btn-container flex' onClick={()=> handleDelete(exercise)}>
-                <p>X</p>
+            {/* {toggleDisplay ?  */}
+            <div className='delete-btn-container r-c' onClick={()=> handleDelete(exercise)}>
+                <p><RiDeleteBin5Line/></p>
             </div>
-        : ""    }
+        {/* : ""    */}
         </div>
+        {error ? 
+        <div className='set-error wd flex'>
+            <div className='set-error-msg'>
+                <h6>{error.sets}</h6>
+            </div>
+            <div className='set-error-msg'>
+                <h6>{error.reps}</h6>
+            </div>
+        </div> : "" }
+        </>
     )
 }
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom'
 import './Signup.css'
 
-function Signup( { handleNewAccount } ) {
+function Signup( { handleNewAccount, setLoading } ) {
 
     const history = useHistory()
 
@@ -42,6 +42,7 @@ function Signup( { handleNewAccount } ) {
     console.log(error)
 
     function handleSubmit(e) {
+        setLoading(true)
         e.preventDefault();
         if (formData.password !== formData.reenterpassword) {
             setPwError("Passwords don't match")
@@ -55,30 +56,81 @@ function Signup( { handleNewAccount } ) {
                 username: formData.username,
                 password: formData.password,
                 email: formData.email,
-                weight: formData.weight,
                 feet: formData.feet,
                 inches: formData.inches
             })
         })
         .then(res => {
             if (res.ok) {
-              history.push('/');
-              handleNewAccount(res);
-            } else {
-              return res.json();
+                res.json()
+                .then((res) => {
+                    handleNewAccount(res);
+                    fetch(`/weights`, {
+                        method: "POST",
+                        headers: {"Content-Type" : "application/json"},
+                        body: JSON.stringify({
+                            weight: formData.weight,
+                            user_id: res.id
+                        })
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                            setLoading(false)
+                            res.json().then(console.log(res))
+                        }
+                    })
+                    .then((data) => {
+                        if (data) {
+                            console.log(data.errors)
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                })
             }
-          })
+        })
+        
+        //     setLoading(false)
+            //     console.log(res)
+            // } else {
+            //     return res.json()
+            // }      
+            // .then((res) => {
+                //     console.log(res)
+            // })
+            // .then(res => {
+                    //     if (res.ok) {
+                        //         setLoading(false)
+                        //         history.push('/');
+                        //         return res.json();
+                        //     }
+                        // })
+                        // .then(data => {
+                            //     if (data) {
+                                //         setLoading(false)
+                    //         setError(data.errors)
+                    //     }
+                    // })
+                    // .catch(error => {
+                        // setLoading(false)
+                    //     console.log(error)
+                    // })
+        //         })
           .then(data => {
             if (data) {
+                setLoading(false)
               setError(data.errors);
             }
           })
           .catch(error => {
-            console.log(error);
-          });
+                setLoading(false)
+                console.log(error);
+              });
+            // }
+        }
     }
-}
-
+        
     return(
         <div className="signup r-c">
             <form className='signup-box c-c' onSubmit={handleSubmit}>
@@ -160,7 +212,7 @@ function Signup( { handleNewAccount } ) {
                             <h3>Weight:</h3>
                         </div>
                         <div className='field-number r-c'>
-                            <input type='number' name='weight' min='3' max='700' value={formData.weight} onChange={handleChange} />
+                            <input type='number' name='weight' min='3' max='700' step='0.1' value={formData.weight} onChange={handleChange} />
                             <h3>lbs:</h3>
                         </div>
                         <div className='label-number r-c'>

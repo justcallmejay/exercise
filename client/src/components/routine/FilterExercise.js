@@ -19,7 +19,7 @@ function FilterExercise( { setFilterDifficulty, searchInput, setSearchInput } ) 
             </div>
             <div className='filter-dropdown flex'>
                 <select onChange={(e) => handleDifficultChange(e.target.value)}>
-                    <option value="All"></option>
+                    <option value="All">All</option>
                     <option value="Easy">Easy</option>
                     <option value="Moderate">Moderate</option>
                     <option value="Difficult">Difficult</option>

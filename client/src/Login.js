@@ -46,10 +46,21 @@ function Login( { updateUser, currentUser, setLoading } ) {
                     updateUser(user)
                     history.push(`/users/${user.username}`)
                 })
+                } else {
+                    return res.json()
                 }
             })
-        }
-    }
+            .then(data => {
+                if (data) {
+                    setLoading(false);
+                    setError(data.error)
+                }
+            })
+            .catch(error => {
+                console.log(error);
+              });            
+                }
+            }
 
 
     return(
@@ -66,12 +77,17 @@ function Login( { updateUser, currentUser, setLoading } ) {
                         <input type='text' name="username" value={formData.username} onChange={handleChange} placeholder="Username" />
                     </div>
                 </div>
-                <div className='user-container r-c'>
-                    <div className='login-label r-c'>
-                        <h3>Password:</h3>
+                <div className='user-pw c-c'>
+                    <div className='user-container r-c'>
+                        <div className='login-label r-c'>
+                            <h3>Password:</h3>
+                        </div>
+                        <div className='login-input r-c'>
+                            <input type='password' name="password" value={formData.password} onChange={handleChange}placeholder="Password" />
+                        </div>
                     </div>
-                    <div className='login-input r-c'>
-                        <input type='password' name="password" value={formData.password} onChange={handleChange}placeholder="Password" />
+                    <div>
+                        <h5>{error}</h5>
                     </div>
                 </div>
                 <div className='login-btn-container flex'>

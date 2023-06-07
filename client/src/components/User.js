@@ -15,13 +15,14 @@ function User( { updateUser, userRoutine, setLoading, date, setUserRoutine, form
     const [ userWeight, setUserWeight ] = useState(last_converted)
     const [ updateWeight, setUpdateWeight ] = useState(false)
     const [ updateEnabled, setUpdateEnabled ] = useState(false)
+    
     const hasOne = userRoutine.length > 0 
     const hasOneAndTodaysRoutine = todaysRoutine.length > 0
     
     const history = useHistory()
     
         useEffect(() => {
-            if (timeDiff === 7) {
+            if (timeDiff === 1) {
                 setUpdateEnabled(true)
             }
         }, [])
@@ -121,7 +122,7 @@ function User( { updateUser, userRoutine, setLoading, date, setUserRoutine, form
             <div className='user-header wd flex'>
                     <h4>Some Exercise App</h4>
                     <p>Date: {formattedDate}</p>
-                    <button className='btn' onClick={handleLogout}>Logout</button>
+                    <button className='btn hm-btn' onClick={handleLogout}>Logout</button>
             </div>
             <div className='userpg-containerr flex'>
                 <div className='userpg-info-container wd flex'>
@@ -135,21 +136,21 @@ function User( { updateUser, userRoutine, setLoading, date, setUserRoutine, form
                     </div>
                     <div className='userpg-stat ht'>
                         <p>{currentUser.name}</p>
-                        <p>{currentUser.feet} ft.</p><p>{currentUser.inches} in.</p>
-                        {/*update weight when a week has passed:*/}
+                        <span>{currentUser.feet} ft.{currentUser.inches} in.</span>
                         {updateWeight ?
                             <div className='flex'>
                                 <input className='input-wt' type="number" step='0.1' value={userWeight} onChange={(e) => handleUpdateWtChange(e)}/>
                                 <button onClick={handleWeightChange}>Update</button>
+                                <button onClick={toggleUpdateWeight}>Cancel</button>
                             </div>
                             :
                                 <>
                             <div className='flex'>
-                                <div className='user-weight'>
+                                <div className='user-weight-container'>
                                     <p>{userWeight} lbs.</p>
                                 </div>
                             {updateEnabled ?
-                                <div className='user-update-link c-c'>
+                                <div className='user-update-link flex'>
                                     <p className='user-link' onClick={toggleUpdateWeight}>update weight</p>
                                     {errors ? 
                                     <div className='error-container'>
@@ -169,7 +170,7 @@ function User( { updateUser, userRoutine, setLoading, date, setUserRoutine, form
                         <button className={`userpg-btn hm-btn ${hasOneAndTodaysRoutine & hasOne ? "" : "not-allowed"}`}>{hasOneAndTodaysRoutine & hasOne ? 'BEGIN EXERCISE' : 'Create Routine Below'}</button>
                     </Link>
                     <Link to={hasOne ? hasOneAndTodaysRoutine ? "#" : '/select-routine' : '#'}>
-                        <button className={`userpg-btn ${hasOne ? hasOneAndTodaysRoutine ? "not-allowed" : "" : "not-allowed"}`}>{hasOne ? 'Select Exercise Routine' : 'Create Routine Below'}</button>
+                        <button className={`userpg-btn hm-btn ${hasOne ? hasOneAndTodaysRoutine ? "not-allowed" : "" : "not-allowed"}`}>{hasOne ? 'Select Exercise Routine' : 'Create Routine Below'}</button>
                     </Link>
                     <Link to='/create-new'>
                         <button className='userpg-btn hm-btn'>Create Exercise Routine</button>

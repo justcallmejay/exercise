@@ -5,7 +5,8 @@ class ExerciseRoutine < ApplicationRecord
 
     has_many :exercise_rxes, dependent: :destroy
 
-    validates :sets, presence: true
-    validates :reps, presence: true
+    validates :sets, presence: { message: "Sets cannot be blank" }
+    validates :reps, presence: { message: "Reps cannot be blank" }
+    
 
 end

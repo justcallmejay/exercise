@@ -2,6 +2,7 @@
     height: 50px;
     width: 100%;
     border: inset rgba(0, 0, 0, 0.3) 2px;
+    margin: 5px 0;
 }
 
 .exercise-set-label {
@@ -37,5 +38,13 @@
 
 .delete-btn-container {
     width: 7%;
-    border: inset rgba(0, 0, 0, 0.3) 2px;
+    /* border: inset rgba(0, 0, 0, 0.3) 2px; */
+}
+
+.set-error {
+justify-content: center;
+}
+
+.set-error-msg {
+    width: 20%;
 }

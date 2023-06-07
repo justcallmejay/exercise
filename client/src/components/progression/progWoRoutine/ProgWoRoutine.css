@@ -1,0 +1,53 @@
+.prog-wo-container-stuff {
+    align-items: end;
+    height: 400px;
+    width: 100%;
+    border: inset rgb(235, 93, 93) 2px;
+}
+
+.user-log-wo-result-table {
+    flex-direction: column;
+    height: 100%;
+    width: 80%;
+    border: inset rgb(0, 0, 0) 2px;
+    overflow-y: auto;
+}
+
+.prog-wo {
+    height: 100%;
+    width: 30%;
+    /* border: inset rgb(0, 0, 0) 2px; */
+    /* margin: 20px; */
+}
+
+.prog-wo-user-stats-container {
+    margin: 0 0 0 5px;
+    height: 85%;
+    width: 10%;
+    /* border: inset rgb(0, 0, 0) 2px; */
+    justify-content: start;
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.prog-wo-label {
+    height: 15%;
+    width: 100%;
+    /* border: inset rgb(0, 0, 0) 2px; */
+}
+
+.prog-wo-attr-container {
+    height: 85%;
+    width: 100%;
+    /* border: inset rgb(0, 0, 0) 2px; */
+}
+
+.prog-wo-attr-label, .prog-wo-attr-stats {
+    height: 16%;
+    width: 100%;
+    /* border: inset rgb(0, 0, 0) 2px; */
+}
+
+.prog-wo-attr-label {
+    justify-content: end;
+}
+

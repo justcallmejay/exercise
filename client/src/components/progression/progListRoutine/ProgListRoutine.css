@@ -1,0 +1,67 @@
+.prog-list-routine {
+    flex-direction: column;
+    height: 100%;
+    width: 80%;
+    border: inset rgb(204, 255, 0) 2px;
+    overflow-y: auto;
+}
+
+.prog-list-container-thing {
+    height: 30%;
+    width: 100%;
+    border: inset rgb(45, 34, 255) 2px;
+    margin: 10px 0 0 0;
+}
+
+.prog-list-routine-exercise {
+    /* margin: 10px 20px; */
+    height: 100%;
+    width: 30%;
+    /* border: inset rgb(0, 0, 0) 2px; */
+}
+
+.prog-label {
+    width: 70%;
+    height: 100%;
+    /* border: inset rgb(0, 0, 0) 2px; */
+}
+
+.prog-stats-label {
+    width: 30%;
+    height: 100%;
+    /* border-left: inset rgb(0, 0, 0) 2px; */
+    border-right: none;
+
+}
+
+.prog-label-attr {
+    width: 100%;
+    height: 16.5%;
+    justify-content: end;
+    align-items: center;
+}
+
+.prog-user-stats-container {
+    height: 100%;
+    width: 10%;
+    /* border: inset rgb(0, 0, 0) 2px; */
+}
+
+.prog-level {
+    width: 100%;
+    height: 30%;
+    border: inset rgb(0, 0, 0) 2px;
+}
+
+.incomplete {
+    color: red;
+}
+
+.complete {
+    color: green;
+}
+
+.prog-stats {
+    width: 100%;
+    height: 20%;
+}

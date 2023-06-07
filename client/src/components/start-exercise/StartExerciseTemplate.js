@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { HiOutlineInformationCircle } from 'react-icons/hi'
 
-function StartExerciseTemplate( { exer, setToggleDisplay, toggleDisplay } ) {
+function StartExerciseTemplate( { exer, setToggleDisplay } ) {
 
     const sum = (exer.exercise_routine.sets * exer.exercise_routine.reps)
     const number = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
@@ -46,15 +46,17 @@ function StartExerciseTemplate( { exer, setToggleDisplay, toggleDisplay } ) {
         }
     }, [checkbox])
 
-    // function incompleteToggle() {
-    //     setIncomplete(incomplete => !incomplete)
-    //     exer.completed = incomplete
-    //     exer.percent_completed = incompleteRep / sum
-    // }
+    function handleIncompleteReps(e) {
+        setIncompleteRep(e)
+        // exer.completed = incomplete
+        exer.percent_completed = (incompleteRep / sum * 100)
+    }
 
     function toggleEnter() {
         setToggleDisplay(toggleDisplay => !toggleDisplay)
     }
+
+    console.log(exer.percent_completed)
 
     // console.log((incompleteRep / (exer.exercise_routine.sets * exer.exercise_routine.reps)) * 100)
 
@@ -108,8 +110,8 @@ function StartExerciseTemplate( { exer, setToggleDisplay, toggleDisplay } ) {
                     </div>
                     <div className='complete-set-input ht flex'>
                         <select onChange={(e) => handleintensityChange(e)}>
-                            {number.map(num => 
-                            <option value={num}>{num}</option>)}
+                            {number.map((num, i) => 
+                            <option value={num} key={i}>{num}</option>)}
                         </select>
                          {/* <input type='number' min='1' max='10'  step='0.5' value={perceivedExertion} onChange={(e) => handleintensityChange
                         (e)}/> */}
@@ -121,7 +123,7 @@ function StartExerciseTemplate( { exer, setToggleDisplay, toggleDisplay } ) {
                         <p>If incompleted, enter total reps done for this exercise:</p>
                     </div>                    
                     <div className='incomplete-set-input ht flex'>
-                        <input type='number' min='0' max={sum - 1} value={incompleteRep} onChange={(e) => setIncompleteRep(e.target.value)}/>
+                        <input type='number' min='0' max={sum - 1} value={incompleteRep} onChange={(e) => handleIncompleteReps(e.target.value)}/>
                     </div>
                 </div> : ""}
                 </div>

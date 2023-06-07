@@ -6,7 +6,7 @@
 .user-routine-container {
     height: 1200px;
     width: 700px;
-    border: inset rgb(0, 0, 0) 1px;
+    border: inset rgb(255, 0, 0) 1px;
 }
 
 .routine-label-container {
@@ -15,9 +15,21 @@
     width: 100%;
     border: inset rgb(0, 0, 0) 1px;
 }
-
+/* 
 .routine-label-container * {
     margin: 0 0 0 20px;
+} */
+
+.routine-label-input {
+    width: 100%;
+    height: 75%;
+    /* border: inset rgb(0, 0, 0) 1px; */
+}
+
+.routine-error {
+    height: 20px;
+    color: red;
+    /* border: inset rgb(0, 0, 0) 1px; */
 }
 
 .bp-button-container {
@@ -53,7 +65,7 @@
 
 .exercise-filter {
     width: 100%;
-    height: 100px;
+    height: 50px;
     border: inset rgba(0, 0, 0, 0.3) 2px;
 
 }

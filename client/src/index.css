@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap');
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -11,15 +13,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'DM Serif Display', serif;
 }
 
 .App {
-  height: 90vh;
-  width: 100vh;
+  height: 100vh;
+  width: 100vw;
   border: inset rgb(0, 0, 0) 1px
 }
 
@@ -38,4 +42,22 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.ht {
+  height: 100%;
+}
+
+.wd {
+  width: 100%;
+}
+
+.f-a {
+  display: flex;
+  align-items: center;
+}
+
+.form {
+  height: 98%;
+  width: 100%;
 }

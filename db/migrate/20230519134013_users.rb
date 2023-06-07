@@ -5,7 +5,7 @@ class Users < ActiveRecord::Migration[7.0]
       t.string :username
       t.string :password_digest
       t.string :email
-      t.integer :weight
+      # t.integer :weight
       t.integer :feet
       t.integer :inches
 

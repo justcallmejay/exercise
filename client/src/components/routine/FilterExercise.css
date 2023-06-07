@@ -41,4 +41,5 @@
 input[placeholder="Exercise"] {
     width: 95%;
     border-radius: 10px;
+    border: inset rgba(0, 0, 0, 0.3)
 }

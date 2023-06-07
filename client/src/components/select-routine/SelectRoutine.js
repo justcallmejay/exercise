@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 // import SelectExerciseWt from './SelectExerciseWt';
+import BackBtn from '../BackBtn'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './SelectRoutine.css'
 
-function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } ) {
+function SelectRoutine( { userRoutine, currentUser, setLoading } ) {
 
     const history = useHistory()
 
@@ -13,10 +14,10 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
     const [ selectLast, setSelectLast ] = useState(false)
     const [ prevRoutine, setPrevRoutine ] = useState([])
     const getWeight = prevRoutine.map(rout => rout.exercise_rxes.map(ex => ex.weight))
-    
+    const lastWeight = getWeight.map(arr => arr[arr.length - 1]);
     // console.log(selectLast)
-    // console.log(getWeight.length > 0)
-    // console.log(prevRoutine)
+    console.log(Number(lastWeight[0]))
+    console.log(prevRoutine)
     
 
     console.log(errors)
@@ -28,6 +29,8 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
         return routineArray.map(() => ({weight : ""})
         )
     })
+
+    console.log(date)
     
     // console.log(errors.map(re => re.errors.weight))
     // console.log(todaysRoutine)
@@ -75,7 +78,7 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
     // console.log(routineArray)
     // console.log(weightInput)
 
-    function handleSubmit(e) {
+    function handleSubmitRoutine(e) {
         e.preventDefault();
         setLoading(true);
         
@@ -84,10 +87,10 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
         const formattedDate = date.toLocaleDateString('en-US', options);
       
         const promises = routineArray.map((rout, i) => {
-          return delay(1000 * i).then(() => {
+          return delay(1500 * i).then(() => {
             const weightInputItem = weightInput[i];
             const routine = weightInputItem && weightInputItem.weight;
-            console.log(routine)
+            // console.log(routine)
       
             return fetch('/exercise_rxes', {
               method: 'POST',
@@ -103,25 +106,29 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
         })
         .then(res => {
               if (res.ok) {
-              history.push(`/users/${currentUser.username}`);
-              // return res.json();
-              } else {
-                  setLoading(false);
+                  res.json().then(res => console.log(res))
+                } else {
+                    setLoading(false);
                   return res.json()
-              }
+                }
+            })
+            .then(data => {
+                if (data) {
+                    setLoading(false);
+                    setErrors(data.errors)
+                }
+            })
+            .catch(error => {
+                setLoading(false)
+                console.log(error)
+            })
         })
-        .then(data => {
-          if (data) {
-            setLoading(false);
-            setErrors(data.errors)
-          }
-        })
-      })
     });
     Promise.all(promises)
-      .then(results => {
+    .then(results => {
           console.log(results);
           setLoading(false);
+          history.push(`/users/${currentUser.username}`);
       })
       .then(data => {
         if (data) {
@@ -136,11 +143,19 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
     };
 
     return(
-        <form className='select-routine' onSubmit={handleSubmit}>
+        <form className='select-routine c-c' onSubmit={handleSubmitRoutine}>
             <div className='user-routine-container'>
                 <div className='select-routine-label-container r-c'>
                     <div className={`routine-label flex ${selectRoutine.length < 1 ? 'w100' : ''}`}>
                         <h3>Select Routine:</h3>
+                        {/* <div className='dropdown-select c-c'>
+                            <p>Select:</p>
+                            <div className='dropdown-content c-c'>
+                                <p></p>
+                                {userRoutine.map(rout =>
+                                <p value={rout.id} key={rout.id} onClick={(e) => handleSelect(e.target.getAttribute('value'))}>{rout.name}</p>)}
+                            </div>
+                        </div> */}
                         <select onChange={(e) => handleSelect(e.target.value)}>
                             <option value=""></option>
                             {userRoutine.map(rout => 
@@ -150,13 +165,13 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
                 {selectRoutine.length > 0 ?
                     <div className='checkbox-container c-c'>
                         <div className='check-container flex'>
-                            <input type='checkbox' onChange={selectLastBox}/><h4> Weight from last exercise?</h4>
+                            <input type='checkbox' onChange={selectLastBox}/><h4>{selectLast ?  "Uncheck to update numbers": "Weight from last exercise?"}</h4>
                         </div>
-                        <div className='check-container flex'>
+                        {/* <div className='check-container flex'>
                             <input type='checkbox'/><h4> Select earlier exercise</h4>
-                        </div>
+                        </div> */}
                     </div> : ""}
-                    </div>
+                </div>
             <div className='routine-exercises-container'>
                 {routineArray.map((rout, index) =>
                 <div key={rout.id}>
@@ -172,7 +187,7 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
 
                     <div className='exercise-set-rep-counter flex'>
                         <h4>Weight:</h4>
-                        <input className='ex-set-counter' type='number' name='weight' min='0' max='2000' step='5' value={selectLast ? parseInt(getWeight[index], 10) : weightInput.weight} onChange={(e) => handleChange(e, index)}/>
+                        <input className='ex-set-counter' type='number' name='weight' min='0' max='2000' step='5' value={selectLast ? Number(lastWeight[index]) : weightInput.weight} onChange={(e) => handleChange(e, index)}/>
                     </div>
                     <div className='exercise-set-rep-counter flex'>
                         <h4>Sets: {rout.sets}</h4>
@@ -201,9 +216,13 @@ function SelectRoutine( { userRoutine, currentUser, setLoading, todaysRoutine } 
                 />
                 </div>
             </div>
+            {selectRoutine ? 
             <div className='routine-submit-btn-container r-c'>
-                <button className='btn'>Submit</button></div>
+                <button className='btn'>Submit</button>
+            </div> : ""
+            }
             </div>
+            <BackBtn currentUser={currentUser}/>
         </form>
     )
 }

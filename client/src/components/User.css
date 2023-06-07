@@ -1,18 +1,130 @@
 .user {
     height: 100%;
-    width: 100%;
+    width: 80%;
     border: inset rgb(0, 0, 0) 1px;
     /* background-color: blue; */
 }
 
-.userpg-container {
-    height: 600px;
-    width: 500px;
+.user-header {
+    top: 0;
+    width: 80%;
+    height: 70px;
+    position: absolute;
+    /* border: inset rgb(0, 0, 0) 1px; */
+    justify-content: space-between;
+}
+
+.user-header > h4 {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 25px;
+    margin: 10px 0 0 15px;
+}
+
+.user-header > p {
+    font-size: 15px;
+    margin: 20px 0 0 -40px;
+}
+
+/* .user-logout  {
+    width: 150px;
     border: inset rgb(0, 0, 0) 1px;
+} */
+
+.userpg-containerr {
+    flex-direction: column;
+    height: 700px;
+    width: 500px;
+    box-shadow: 0 5px 10px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+}
+
+.userpg-info-container {
+    height: 20%;
+    border-bottom: inset rgb(0, 0, 0) 1px;
+}
+
+.userpg-container {
+    height: 80%;
+}
+
+.userpg-img {
+    width: 30%;
+    /* border: inset rgb(0, 0, 0) 1px; */
+}
+
+.userpg-img > p {
+    height: 85%;
+    width: 85%;
+    border: inset rgb(0, 0, 0) 1px;
+    border-radius: 100px;
+}
+
+.userpg-info {
+    flex-direction: column;
+    align-items: end;
+    width: 15%;
+    /* border: inset rgb(0, 0, 0) 1px; */
+}
+
+.userpg-info > h4 {
+    margin: 10px 0 0 0;
+}
+
+.userpg-stat > * {
+    margin: 0 0 10px 0;
+}
+
+.userpg-stat > span {
+    margin: 0 0 10px 0;
+}
+
+.userpg-stat {
+    width: 40%;
+    margin: 10px 0 0 10px;
 }
 
 .userpg-btn {
     height: 50px;
     width: 200px;
     background-color: #fff;
+    margin: 10px;
+}
+
+.not-allowed {
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: rgb(236, 236, 236);
+}
+
+.hm-btn:hover {
+    cursor: pointer;
+    background-color: rgb(253, 181, 181);
+    color: #fff;
+    border: none;
+}
+
+.user-weight-container {
+    margin: 10px 0 0 0;
+    /* border: inset rgb(0, 0, 0) 1px; */
+}
+
+.user-link {
+    font-size: 10px;
+}
+
+.user-update-link {
+    margin: 0 0 0 5px;
+    align-items: center;
+}
+
+.user-update-link:hover {
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+}
+
+.input-wt {
+    width: 50px;
+    margin: 0 5px 0 0;
 }

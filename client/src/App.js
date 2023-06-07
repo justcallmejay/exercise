@@ -11,16 +11,22 @@ import Progress from './components/progression/Progress';
 import ProgCalendar from './components/progression/ProgCalendar';
 import ProgList from './components/progression/ProgList';
 import ClipLoader from "react-spinners/ClipLoader";
-import ManageRoutine from './components/ManageRoutine'
+import ManageRoutine from './components/manage/ManageRoutine'
 import './ClipLoader.css'
 
 function App() {
 
-  const [ user, setUser ] = useState(null)
+  const date = (new Date())
+  const options = { timeZone: 'UTC', month: 'short', day: 'numeric', year: 'numeric' };
+  const formattedDate = date.toLocaleDateString('en-US', options);
+
+  const [ user, setUser ] = useState([])
   const [ currentUser, setCurrentUser ] = useState(false)
   const [ userRoutine, setUserRoutine ] = useState([])
-  const [ startExercise, setStartExercise ] = useState([])
   const [ loading, setLoading ] = useState(false)
+  const [ todaysRoutine, setTodaysRoutine ] = useState([])
+
+  console.log(currentUser)
 
   function handleNewAccount(acc) {
     setUser([...user, acc])
@@ -30,13 +36,11 @@ function App() {
     setCurrentUser(user)
   }
 
-  // useEffect(() => {
-  //   if (loading) {
-  //     setTimeout(() => {
-  //       setLoading(false)
-  //     }, 5000)
-  //   }
-  // }, [loading])
+  useEffect(() => {
+      fetch(`/last_routine/?date=${formattedDate}`)
+      .then(res => res.json())
+      .then(res => setTodaysRoutine(res))
+  }, [])
 
   useEffect(() => {
     fetch('/authorized')
@@ -50,18 +54,19 @@ function App() {
     })
   }, [])
 
-  // console.log(currentUser.id)
+  // console.log(todaysRoutine)
 
   return (
-    <div className="App">
+    <div className="App r-c">
       {loading ?
       <div className='clip-loader r-c'>
-       <div className='clip-loader-container r-c'>
+       <div className='clip-loader-container c-c'>
         <ClipLoader
         // css={override}
         size={150}
         loading={loading}
         />
+        <p>Loading...</p>
         </div> 
       </div>
       : ""
@@ -70,28 +75,60 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route path='/start-exercise'>
-            <StartExercise currentUser={currentUser} startExercise={startExercise}/>
+            <StartExercise 
+              currentUser={currentUser} 
+              todaysRoutine={todaysRoutine} 
+              formattedDate={formattedDate}
+              setLoading={setLoading}
+            />
           </Route>
           <Route path={`/users/${currentUser.username}`}>
-            <User currentUser={currentUser} updateUser={updateUser} userRoutine={userRoutine} setUserRoutine={setUserRoutine}/>
+            <User
+              setLoading={setLoading}
+              currentUser={currentUser} 
+              formattedDate={formattedDate}
+              setTodaysRoutine={setTodaysRoutine} 
+              setUserRoutine={setUserRoutine} 
+              updateUser={updateUser} 
+              userRoutine={userRoutine}
+              todaysRoutine={todaysRoutine}
+              date={date}
+                />
           </Route>
           <Route path='/select-routine'>
-            <SelectRoutine userRoutine={userRoutine} currentUser={currentUser} setStartExercise={setStartExercise} setLoading={setLoading}/>
+            <SelectRoutine 
+              currentUser={currentUser} 
+              setLoading={setLoading}
+              todaysRoutine={todaysRoutine} 
+              userRoutine={userRoutine} 
+                />
           </Route>
           <Route path='/create-new'>
-            <Routine currentUser={currentUser} setLoading={setLoading}/>
+            <Routine 
+              currentUser={currentUser} 
+              setLoading={setLoading}
+                />
           </Route>
           <Route path='/progress'>
-            <Progress />
+            <Progress 
+              currentUser={currentUser}
+                />
           </Route>
           <Route path='/progress-list'>
-            <ProgList/>
+            <ProgList 
+              currentUser={currentUser}
+                />
           </Route>
           <Route path='/progress-calendar'>
-            <ProgCalendar/>
+            <ProgCalendar 
+              currentUser={currentUser} 
+              setLoading={setLoading}
+                />
           </Route>
           <Route path='/manage'>
-            <ManageRoutine currentUser={currentUser}/>
+            <ManageRoutine 
+              currentUser={currentUser}
+                />
           </Route>
         </Switch>
       </BrowserRouter>
@@ -99,7 +136,7 @@ function App() {
       <BrowserRouter>
       <Switch>
         <Route path='/signup'>
-          <Signup handleNewAccount={handleNewAccount}/>
+          <Signup handleNewAccount={handleNewAccount} setLoading={setLoading}/>
         </Route>
         <Route path='/login'>
           <Login updateUser={updateUser} currentUser={currentUser} setLoading={setLoading}/>
